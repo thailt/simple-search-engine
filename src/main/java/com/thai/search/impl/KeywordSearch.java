@@ -43,7 +43,7 @@ public class KeywordSearch implements SearchEngine {
                 productsWithWord = new TreeSet<String>();
             }
             productsWithWord.add(text);
-            indexTable.replace(word, productsWithWord);
+            indexTable.put(word, productsWithWord);
         }
 
     }
@@ -60,10 +60,16 @@ public class KeywordSearch implements SearchEngine {
         String unAccentText = StringUtil.removeAccent(text);
         String lowerText = unAccentText.toLowerCase();
         String[] words = StringUtil.split(lowerText, 20);
-        Set<String> products = new TreeSet<>();
-        for (String word : words) {
+
+        if (words.length == 0) {
+            return new ArrayList<>();
+        }
+        Set<String> products = indexTable.get(words[0]);
+
+        for (int i = 1; i < words.length; i++) {
+            String word = words[i];
             if (indexTable.containsKey(word)) {
-                products.addAll(indexTable.get(word));
+                products.retainAll(indexTable.get(word));
             }
         }
         return new ArrayList<>(products);
