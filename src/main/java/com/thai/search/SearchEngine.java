@@ -11,6 +11,4 @@ public interface SearchEngine {
     void index(List<String> texts);
 
     List<String> search(String text);
-
-    List<String> searchWithoutAccent(String text);
 }

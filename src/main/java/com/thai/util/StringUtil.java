@@ -10,9 +10,14 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class StringUtil {
+
     private static final Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
 
     public static String removeAccent(String s) {
+        if (s == null) {
+            return null;
+        }
+
         String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
         return pattern.matcher(temp).replaceAll("");
     }
@@ -33,5 +38,30 @@ public class StringUtil {
         ClassLoader classLoader = StringUtil.class.getClassLoader();
         File file = new File(classLoader.getResource(resourcePath).getFile());
         return file.getAbsolutePath();
+    }
+
+    public static boolean isNullOrEmpty(String text) {
+        if (text == null) {
+            return true;
+        } else if (text.trim().isEmpty()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static String[] split(String text) {
+        if (StringUtil.isNullOrEmpty(text)) {
+            return new String[]{};
+        } else {
+            return text.split("\\s+");
+        }
+    }
+    public static String[] split(String text, int limit) {
+        if (StringUtil.isNullOrEmpty(text)) {
+            return new String[]{};
+        } else {
+            return text.split("\\s+", limit);
+        }
     }
 }
