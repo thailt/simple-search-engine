@@ -10,7 +10,6 @@ public class Main implements CommandLineRunner {
         new SpringApplication(Main.class).run(args);
     }
 
-
     @Override
     public void run(String... args) throws Exception {
         System.out.println("hello");
