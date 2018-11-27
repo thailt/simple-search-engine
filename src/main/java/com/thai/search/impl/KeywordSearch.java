@@ -66,6 +66,10 @@ public class KeywordSearch implements SearchEngine {
         }
         Set<String> products = indexTable.get(words[0]);
 
+        if (products == null) {
+            return new ArrayList<>();
+        }
+
         for (int i = 1; i < words.length; i++) {
             String word = words[i];
             if (indexTable.containsKey(word)) {
