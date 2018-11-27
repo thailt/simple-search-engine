@@ -4,15 +4,15 @@ import com.thai.search.SearchEngine;
 
 import java.util.List;
 
-public class FulltextSearch implements SearchEngine {
+public class FullTextSearch implements SearchEngine {
     @Override
     public void index(String text) {
-
+        //TODO: index for new String text
     }
 
     @Override
     public void index(List<String> texts) {
-
+        //TODO: index for new List<String> text
     }
 
     @Override

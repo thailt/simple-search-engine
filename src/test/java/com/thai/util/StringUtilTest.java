@@ -9,12 +9,9 @@ import java.util.List;
 
 public class StringUtilTest {
 
-    private static final String queryTextFile = "100_query.txt";
-    private static final String productNameTextFile = "product_names.txt";
-
 
     @Test
-    public void testNormalize() {
+    public void testRemoveAccent() {
         String name = "Lê Trí Thái";
         String expectedName = "Le Tri Thai";
         String nameRemoved = StringUtil.removeAccent(name);
@@ -23,30 +20,30 @@ public class StringUtilTest {
 
     @Test
     public void testGetAbsoluteResourceFilePath() {
-        String queryPath = StringUtil.getAbsoluteResourceFilePath(queryTextFile);
+        String queryPath = StringUtil.getAbsoluteResourceFilePath(Constants.queryTextFile);
         Path currentRelativePath = Paths.get("");
 
         System.out.println("path is: " + queryPath);
         Assert.assertTrue(queryPath.startsWith(currentRelativePath.toString()));
-        Assert.assertTrue(queryPath.endsWith(queryTextFile));
+        Assert.assertTrue(queryPath.endsWith(Constants.queryTextFile));
     }
 
     @Test
     public void testGetResourceAsStream() {
-        String input = StringUtil.getAbsoluteResourceFilePath(queryTextFile);
+        String input = StringUtil.getAbsoluteResourceFilePath(Constants.queryTextFile);
         System.out.println(input);
     }
 
     @Test
     public void testReadLinesFromPath() {
-        Path path = Paths.get(StringUtil.getAbsoluteResourceFilePath(queryTextFile));
+        Path path = Paths.get(StringUtil.getAbsoluteResourceFilePath(Constants.queryTextFile));
         List<String> lines = StringUtil.readLines(path);
         Assert.assertEquals(lines.size(), 100);
     }
 
     @Test
     public void testReadLinesFromStringPath() {
-        String absoluteFilePath = StringUtil.getAbsoluteResourceFilePath(productNameTextFile);
+        String absoluteFilePath = StringUtil.getAbsoluteResourceFilePath(Constants.productNameTextFile);
         List<String> lines = StringUtil.readLines(absoluteFilePath);
         Assert.assertEquals(lines.size(), 50000);
     }
