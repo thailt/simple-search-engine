@@ -11,9 +11,16 @@ public class StringUtilTest {
 
 
     @Test
-    public void testRemoveAccent() {
+    public void testRemoveAccentWithAccent() {
         String name = "Lê Trí Thái";
         String expectedName = "Le Tri Thai";
+        String nameRemoved = StringUtil.removeAccent(name);
+        Assert.assertEquals(nameRemoved, expectedName);
+    }
+    @Test
+    public void testRemoveAccentWithVietnameseCharacter() {
+        String name = "nửa đầu";
+        String expectedName = "nua dau";
         String nameRemoved = StringUtil.removeAccent(name);
         Assert.assertEquals(nameRemoved, expectedName);
     }
@@ -65,7 +72,7 @@ public class StringUtilTest {
 
     @Test
     public void testSplitNormalString(){
-        String text = "le tri   hai";
+        String text = "  le tri   hai   ";
         String[] words = StringUtil.split(text);
         Assert.assertEquals(3, words.length);
     }

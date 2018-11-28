@@ -19,7 +19,7 @@ public class StringUtil {
         }
 
         String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
-        return pattern.matcher(temp).replaceAll("");
+        return pattern.matcher(temp).replaceAll("").replaceAll("đ", "d").replaceAll("Đ", "D");
     }
 
     public static List<String> readLines(String path) {
@@ -51,17 +51,14 @@ public class StringUtil {
     }
 
     public static String[] split(String text) {
-        if (StringUtil.isNullOrEmpty(text)) {
-            return new String[]{};
-        } else {
-            return text.split("\\s+");
-        }
+        return split(text, Integer.MAX_VALUE);
     }
+
     public static String[] split(String text, int limit) {
         if (StringUtil.isNullOrEmpty(text)) {
             return new String[]{};
         } else {
-            return text.split("\\s+", limit);
+            return text.trim().split("\\s+", limit);
         }
     }
 }

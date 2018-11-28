@@ -27,7 +27,9 @@ public abstract class SearchEngineTest<T extends SearchEngine> {
         Long duration = endAt - startAt;
 
         System.out
-            .println(String.format("duration for %s is %f ms ", "setup", duration / 1000000.0));
+            .println(String
+                .format("duration for class %s, functions %s is %f ms ",
+                    this.getClass().getCanonicalName(), "setup", duration / 1000000.0));
     }
 
     @Test
@@ -37,7 +39,7 @@ public abstract class SearchEngineTest<T extends SearchEngine> {
             .split(StringUtil.removeAccent(searchText).toLowerCase(), 20);
 
         List<String> result = searchEngine.search(searchText);
-        Assert.assertTrue(result != null);
+        Assert.assertTrue(result.size() > 0);
         for (String product : result) {
             for (String word : words) {
                 Assert.assertTrue(StringUtil.removeAccent(product).toLowerCase()
@@ -62,7 +64,8 @@ public abstract class SearchEngineTest<T extends SearchEngine> {
 
         Assert.assertTrue(duration / 1000000.0 < 1000);
         System.out.println(String
-            .format("duration for %s is %f ms ", "testBenchmarkSearch", duration / 1000000.0));
+            .format("duration for class %s, functions %s is %f ms ",
+                this.getClass().getCanonicalName(), "testBenchmarkSearch", duration / 1000000.0));
     }
 
     @After

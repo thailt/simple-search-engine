@@ -29,12 +29,7 @@ public class KeywordSearch implements SearchEngine {
 
     @Override
     public void index(String text) {
-        if (StringUtil.isNullOrEmpty(text)) {
-            return;
-        }
-        String unAccentText = StringUtil.removeAccent(text);
-        String lowerText = unAccentText.toLowerCase();
-        String[] words = StringUtil.split(lowerText);
+        String[] words = SearchEngine.tokenToSearchWords(text);
         for (String word : words) {
             Set<String> productsWithWord = null;
             if (indexTable.containsKey(word)) {
@@ -57,9 +52,7 @@ public class KeywordSearch implements SearchEngine {
 
     @Override
     public List<String> search(String text) {
-        String unAccentText = StringUtil.removeAccent(text);
-        String lowerText = unAccentText.toLowerCase();
-        String[] words = StringUtil.split(lowerText, 20);
+        String[] words = SearchEngine.tokenToSearchWords(text);
 
         if (words.length == 0) {
             return new ArrayList<>();
@@ -78,4 +71,6 @@ public class KeywordSearch implements SearchEngine {
         }
         return new ArrayList<>(products);
     }
+
+
 }
