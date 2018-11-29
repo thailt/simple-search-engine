@@ -11,7 +11,8 @@ public class ScoredProductName implements Comparable<ScoredProductName> {
         return Double.compare(o.score, this.score);
     }
 
-    public ScoredProductName(ProductName productName) {
+    public ScoredProductName(String word, ProductName productName) {
+        this.word = word;
         this.productName = productName;
     }
 
@@ -37,11 +38,15 @@ public class ScoredProductName implements Comparable<ScoredProductName> {
             return false;
         }
         ScoredProductName that = (ScoredProductName) o;
-        return productName.equals(that.productName);
+        return this.productName.equals(that.productName) && this.word.equals(that.word);
     }
 
     @Override
     public int hashCode() {
-        return productName.hashCode();
+        final int prime = 31;
+        int result = 1;
+        result = result * prime + this.word.hashCode();
+        result = result * prime + this.productName.hashCode();
+        return result;
     }
 }

@@ -3,6 +3,7 @@ package com.thai.search.impl;
 import com.thai.search.SearchEngine;
 import com.thai.util.ProductName;
 import com.thai.util.ScoredProductName;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +13,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+
+import com.thai.util.ScoredQueryProductName;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -70,7 +73,7 @@ public class FullTextSearch implements SearchEngine {
             } else {
                 productsWithWord = new HashSet<ScoredProductName>();
             }
-            productsWithWord.add(new ScoredProductName(productName));
+            productsWithWord.add(new ScoredProductName(word, productName));
             indexTable.put(word, productsWithWord);
         }
     }
@@ -89,7 +92,7 @@ public class FullTextSearch implements SearchEngine {
             Set<ScoredProductName> scoredProductNames = entry.getValue();
             for (ScoredProductName scoredProductName : scoredProductNames) {
                 double scoreByWord = scoring(word,
-                    scoredProductName.getLowerAndUnaccentProductName());
+                        scoredProductName.getLowerAndUnaccentProductName());
                 scoredProductName.updateScoreByWord(word, scoreByWord);
             }
         }
@@ -99,7 +102,7 @@ public class FullTextSearch implements SearchEngine {
     private double frequency(String word, String product) {
         if (this.productNameMap.containsKey(product)) {
             ProductName productName = this.productNameMap
-                .get(product);
+                    .get(product);
             return productName.getWordFrequency(word);
         } else {
             return 0.0;
@@ -110,8 +113,8 @@ public class FullTextSearch implements SearchEngine {
         Set products = indexTable.get(singleWord);
         double numberOfContainKeyword = products.size();
         double rawIdf = Math.log(
-            (this.numberOfDocument - numberOfContainKeyword + 0.5) / (numberOfContainKeyword
-                + 0.5));
+                (this.numberOfDocument - numberOfContainKeyword + 0.5) / (numberOfContainKeyword
+                        + 0.5));
         if (rawIdf < 0) {
             return MIN_IDF;
         } else {
@@ -122,7 +125,7 @@ public class FullTextSearch implements SearchEngine {
     private double scoring(String word, String productName) {
         double frequency = frequency(word, productName);
         return idf(word) * frequency * (this.k1 + 1) / (frequency + this.k1 * (1 - this.b
-            + this.b * numberOfWord(productName) / this.avgDocumentLength));
+                + this.b * numberOfWord(productName) / this.avgDocumentLength));
     }
 
     private double scoring(String[] words, String productName) {
@@ -157,16 +160,26 @@ public class FullTextSearch implements SearchEngine {
         for (int i = 1; i < words.length; i++) {
             String word = words[i];
             if (indexTable.containsKey(word)) {
-                products.retainAll(indexTable.get(word));
+                Set<ScoredProductName> workProducts = indexTable.get(word);
+                products.retainAll(workProducts);
+            } else {
+                products.clear();
+                break;
             }
         }
 
-        Set<ScoredProductName> result = new TreeSet();
-        result.addAll(products);
+        Set<ScoredQueryProductName> result = new TreeSet();
+        for (ScoredProductName scoredProductName : products) {
+            double queryDocumentScore = scoring(words, scoredProductName.getLowerAndUnaccentProductName());
+            ScoredQueryProductName scoredQueryProductName = new ScoredQueryProductName(text, words, scoredProductName);
+            scoredQueryProductName.updateScoreByWord(queryDocumentScore);
+            result.add(scoredQueryProductName);
+        }
+
         List<String> productSearch = result.stream()
-            .map(scoredProductName -> scoredProductName.getOriginProductName())
-            .collect(Collectors
-                .toList());
+                .map(scoredProductName -> scoredProductName.getOriginProductName())
+                .collect(Collectors
+                        .toList());
 
         return productSearch;
     }
